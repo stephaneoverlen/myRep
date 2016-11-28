@@ -4,7 +4,7 @@ myStruct *createSon(myStruct *structure, int pos, char fig){
 
     st->value = fig;                                        // save the value put in "game[pos] = fig"
 
-    char *game = malloc(81 * sizeof(Element));              // define a new game
+    char *game = malloc(81 * sizeof(char));              // define a new game
     Element *possibilities = malloc(81 * sizeof(Element));
     
     strcpy(game, st->game);
@@ -15,11 +15,12 @@ myStruct *createSon(myStruct *structure, int pos, char fig){
     structSon->game = game;
     structSon->value = 0;
     structSon->father = structure;
-    
+printf("debug\n");
     for(int i = 0; i < 81; i++){
         strcpy(possibilities[i].box, st->possibilities[i].box);
         possibilities[i].count = st->possibilities[i].count;
     }
+printf("debug2\n");
 
     structSon->possibilities = possibilities;
 
@@ -54,15 +55,14 @@ void getBoxesPossibleValues(myStruct *structure){
             countMax--;                                                 // decrease count
 printf("Pas de count = 8, countMax = %d\n", countMax);
             if(countCount(st->possibilities) == 0){                     // if countMax negative
-printf("Plus de count disponible\n");
+printf("Aucune possibilite, retour au pere\n");
                 structure = st->father;                                 // get back to the father
-printf("Retour au père\n");
                 countMax = 8;                                           // reset countMax
             }
         }
         
         else if(st->possibilities[i].count == 8){                       // if count = 8 found :
-printf("count = 8 found in box %d\n", i);                               // i = number of the box found :
+printf("count = 8 dans la case %d\n", i);                               // i = number of the box found :
             figure = 0;                                                 // initialize "figure"
             while(st->possibilities[i].box[figure] == 48)   figure++;   // look for the figure to put in the box
             st->game[i] = figure + 49;                                  // fill the box
@@ -75,22 +75,37 @@ printf("countMax = %d < 8\n", st->possibilities[i].count);
             while(1){                                                                       // tant qu'un fils n'a pas été créé
 sleep(1);
 printf("case %d contient countMax = %d\n", i, countMax);                                    // i = numéro de la case trouvée :
-                while(st->possibilities[i].box[j] == 48){                                  
+                while(st->possibilities[i].box[j] == 48 && j < 9){
                     j++;
-                }                                                                           // j = chiffre à ajouter
+                }                                                   // j = chiffre à ajouter 
                 
-printf("j = %d, st->value = %d\n", j+49, st->value);
-                if(j+49 > st->value){                                                       // si j est supérieur à la valeur déjà testée
-                    structure = createSon(structure, i, st->possibilities[i].box[j]);       // creation d'un fils avec game[i] = st->possibilities[i].box[j]
-printf("Creation du fils avec game[%d] = %d\n", i, st->possibilities[i].box[j]);
-                    countMax = 8;                                                           //
+                if(j >= 9){                                         // si tous les chiffres ont été testés
+if(NULL != st->father){
+printf("Retour au pere %p %p\n", &structure, &structure->father);
+                    structure = structure->father;                         // get back to the father
+}
+else{
+    printf("PAS DE PERE\n");
+}
                     break;
+                }
+                
+//printf("si j=%c > st->value=%c, on crée un fils: \n", j+49, st->value);
+                else if(st->value < j+49){                                              // s'il reste des chiffres à tester et si j est supérieur à la dernière valeur testée
+                    structure = createSon(structure, i, st->possibilities[i].box[j]);   // creation d'un fils avec game[i] = st->possibilities[i].box[j]
+printf("Creation du fils avec game[%d] = %c\n", i, st->possibilities[i].box[j]);
+                    countMax = 8;                                                       // initialize countMax
+                    break;                                                              // leave the loop
+                }
+                else{
+                    j++;
                 }
             }
         }
 
-//sleep(1);
-//        gamePrint(structure);                       // print the game
+// sleep(1);
+if(NULL == st->game) printf("ATATAAAAAAA  NULL\n");
+        gamePrint(structure);                       // print the game
 //        countPrint(st->possibilities);
         if(emptyCount(st->game) == 0)   break;      // if game is over, quit the while loop
         
