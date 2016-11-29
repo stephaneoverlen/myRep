@@ -4,7 +4,7 @@ myStruct *createSon(myStruct *structure, int pos, char fig){
 
     st->value = fig;                                        // save the value put in "game[pos] = fig"
 
-    char *game = malloc(81 * sizeof(char));              // define a new game
+    char *game = malloc(82 * sizeof(char));              // define a new game
     Element *possibilities = malloc(81 * sizeof(Element));
     
     strcpy(game, st->game);
@@ -15,12 +15,11 @@ myStruct *createSon(myStruct *structure, int pos, char fig){
     structSon->game = game;
     structSon->value = 0;
     structSon->father = structure;
-printf("debug\n");
+    
     for(int i = 0; i < 81; i++){
         strcpy(possibilities[i].box, st->possibilities[i].box);
         possibilities[i].count = st->possibilities[i].count;
     }
-printf("debug2\n");
 
     structSon->possibilities = possibilities;
 
@@ -55,8 +54,10 @@ void getBoxesPossibleValues(myStruct *structure){
             countMax--;                                                 // decrease count
 printf("Pas de count = 8, countMax = %d\n", countMax);
             if(countCount(st->possibilities) == 0){                     // if countMax negative
+printf("@structure=%p, @pere=%p, @papy=%p\n", st, st->father, st->father->father);
 printf("Aucune possibilite, retour au pere\n");
                 structure = st->father;                                 // get back to the father
+printf("@structure=%p\n", st);
                 countMax = 8;                                           // reset countMax
             }
         }
@@ -80,9 +81,11 @@ printf("case %d contient countMax = %d\n", i, countMax);                        
                 }                                                   // j = chiffre à ajouter 
                 
                 if(j >= 9){                                         // si tous les chiffres ont été testés
-if(NULL != st->father){
-printf("Retour au pere %p %p\n", &structure, &structure->father);
-                    structure = structure->father;                         // get back to the father
+while(NULL != st->father){
+printf("@father=%p\n", st->father);
+printf("Tous les chiffres ont ete testes, retour au pere\n");
+                    structure = st->father;                         // get back to the father
+printf("@structure=%p\n", st);
 }
 else{
     printf("PAS DE PERE\n");
@@ -92,7 +95,10 @@ else{
                 
 //printf("si j=%c > st->value=%c, on crée un fils: \n", j+49, st->value);
                 else if(st->value < j+49){                                              // s'il reste des chiffres à tester et si j est supérieur à la dernière valeur testée
+printf("@structure=%p\n", st);
                     structure = createSon(structure, i, st->possibilities[i].box[j]);   // creation d'un fils avec game[i] = st->possibilities[i].box[j]
+printf("@structure=%p, @pere=%p\n", st, st->father);
+if(NULL != st->father->father)  printf("@papy=%p\n", st->father->father);
 printf("Creation du fils avec game[%d] = %c\n", i, st->possibilities[i].box[j]);
                     countMax = 8;                                                       // initialize countMax
                     break;                                                              // leave the loop
