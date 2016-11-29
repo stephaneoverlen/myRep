@@ -57,7 +57,7 @@ printf("Pas de count = 8, countMax = %d\n", countMax);
 printf("@structure=%p, @pere=%p, @papy=%p\n", st, st->father, st->father->father);
 printf("Aucune possibilite, retour au pere\n");
                 structure = st->father;                                 // get back to the father
-printf("@structure=%p\n", st);
+printf("@structure=%p, @father=%p\n", st, st->father);
                 countMax = 8;                                           // reset countMax
             }
         }
@@ -81,15 +81,10 @@ printf("case %d contient countMax = %d\n", i, countMax);                        
                 }                                                   // j = chiffre à ajouter 
                 
                 if(j >= 9){                                         // si tous les chiffres ont été testés
-while(NULL != st->father){
 printf("@father=%p\n", st->father);
 printf("Tous les chiffres ont ete testes, retour au pere\n");
                     structure = st->father;                         // get back to the father
-printf("@structure=%p\n", st);
-}
-else{
-    printf("PAS DE PERE\n");
-}
+printf("@structure=%p, @father=%p\n", st, st->father);
                     break;
                 }
                 
@@ -109,8 +104,6 @@ printf("Creation du fils avec game[%d] = %c\n", i, st->possibilities[i].box[j]);
             }
         }
 
-// sleep(1);
-if(NULL == st->game) printf("ATATAAAAAAA  NULL\n");
         gamePrint(structure);                       // print the game
 //        countPrint(st->possibilities);
         if(emptyCount(st->game) == 0)   break;      // if game is over, quit the while loop
