@@ -4,7 +4,7 @@ myStruct *createSon(myStruct *structure, int pos, char fig){
 
     st->value = fig;                                        // save the value put in "game[pos] = fig"
 
-    char *game = malloc(82 * sizeof(char));              // define a new game
+    char *game = malloc(81 * sizeof(char));              // define a new game
     Element *possibilities = malloc(81 * sizeof(Element));
     
     strcpy(game, st->game);
