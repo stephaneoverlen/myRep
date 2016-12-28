@@ -1,0 +1,7 @@
+Give a grid to this sudoku resolving program so it can fill it.
+
+Each time the program can put multiple values in a box, it tries the first one.
+When it reaches a dead end, it comes back and tries another value.
+
+Even if it works, it could be written better so it runs faster.
+I will fix all this, adding multithreading and then remotely executing.
