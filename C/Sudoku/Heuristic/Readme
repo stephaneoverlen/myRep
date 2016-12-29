@@ -1,0 +1,8 @@
+Give a grid to this sudoku resolving program so it can fill it.
+
+The program looks for the best value to put in the most constraint box.
+When multiple values are possible, it tries the first one and goes on.
+When it reaches a dead end, it comes back and tries another value.
+
+Even if it works, it could be written better so it runs faster.
+I will fix all this, adding multithreading and then remotely executing.
