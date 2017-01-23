@@ -1,0 +1,7 @@
+Voici un exemple de compilateur. Dans l'étape 1, il détermine si les balises sont correctes. Dans l'étape 2, il teste des conditions "if" qui influent sur la suite du code.
+
+Usage : make clean
+        make
+        java -classpath java-cup-11b.jar:. Main file.txt
+        
+Voir le rapport pour plus de détails.
