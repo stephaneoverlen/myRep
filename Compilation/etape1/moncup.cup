@@ -1,0 +1,41 @@
+import java_cup.runtime.*;
+import java.util.Vector;
+import java.io.*;
+import java.util.Stack;
+import java.lang.Boolean;
+
+
+parser code {:
+    Stack letter = new Stack();                                                 // pile qui contiendra les lettres des balises
+:}
+
+terminal TEXT, OPEN, CLOSE, SELFCLOSE;                                          // symboles terminaux
+
+non terminal A, B, C, D, O, T;                                                  // symboles non terminaux
+
+B ::= A | B A | O B C | B O B C                                                 // B = A ou B A ou Ouvrante B Fermante ou B Ouvrante B Fermante
+;
+A ::= T | O C | D                                                               // A = Texte ou Ouvrante Fermante ou autofermante
+;
+D ::= SELFCLOSE:d   {:  System.out.print(d.toString().split("<|/")[1] + " ");   // afficher balise autofermante
+                    :}
+;
+C ::= CLOSE:c       {:  c = c.toString().split("/|>")[1];                       // c = lettre de la balise fermante
+                        if(letter.peek().equals(c)) {                           // si la lettre correspond à celle en haut de la pile
+                            letter.pop();                                       // supprimer la lettre de la pile
+                            System.out.print("-" + c + " ");                    // afficher
+                        }
+                        else{                                                   // si les lettre ne correspondent pas
+                            System.out.print("**ERROR: opening " + letter.peek()
+                                             + ", closing " + c + "**\n");
+                            System.exit(0);                                     // quitter le programme
+                        }
+                    :}
+;
+O ::= OPEN:o        {:  o = o.toString().split("<| |>")[1];                     // o = lettre de la balise ouvrante
+                        letter.push(o);                                         // mettre la lettre dans la pile
+                        System.out.print("+" + o + " ");                        // afficher
+                    :}
+;
+T ::= TEXT                                                                      // texte
+;
