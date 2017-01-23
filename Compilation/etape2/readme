@@ -1,0 +1,12 @@
+/**
+ * @author: Stéphane Overlen
+ * @date:   10 janvier 2017
+ * 
+ * @brief:  mon compilateur
+ * 
+ * @usage:  make clean
+ *          make
+ *          java -classpath java-cup-11b.jar:. Main file.txt
+ * 
+ * @fichier compilé:    file.txt
+**/

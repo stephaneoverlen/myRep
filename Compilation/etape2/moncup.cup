@@ -1,0 +1,106 @@
+import java_cup.runtime.*;
+import java.util.Vector;
+import java.io.*;
+import java.util.*;
+import java.lang.Boolean;
+
+
+parser code {:
+    int i = 0,
+        indent = 0,
+        ifCount = 0;
+        
+    String varName = "";
+    String varValue = "";
+    boolean proceed = true;
+    Stack letter = new Stack();                                 // pile contenant les lettres
+    Map<String, String> map = new HashMap<String, String>();    // dictionnaire
+:}
+
+terminal SET, TEXT, MYIF, OPEN, MYENDIF, CLOSE, SELFCLOSE;
+
+non terminal A, B, C, D, E, I, O, S, T;
+
+B ::= A | B A | O B C | B O B C | I B E | B I B E
+;
+A ::= T | S | O C | I E | D
+;
+E ::= MYENDIF       {:  if(proceed == false){                               // si la condition est remplie
+                            ifCount--;                                      // décrémenter le comptage des conditions "if"
+                            if(ifCount == 0){                               // si le comptage est à 0
+                                proceed = true;                             // remettre proceed à "true"
+                            }                                               // ceci afin d'éviter qu'une boucle endif soit prise en compte alors qu'elle ne doit pas l'être
+                        }
+                    :}
+;
+I ::= MYIF:i        {:  if(proceed == true){                                // si la condition est remplie
+                            varName = i.toString().split(" |=")[1];         // récuépérer le nom de la variable
+                            varValue = i.toString().split("\"")[1];         // récupérer la valeur de la variable
+                            if(null == map.get(varName)){                   // si la variable n'a pas encore été déclarée
+                                System.out.println("Error: undeclared variable " + varName);
+                                System.exit(0);                             // quitter le programme
+                            }
+                            else if(varValue.equals(map.get(varName))){     // si la valeur de la variable est la même que dans le tableau
+                                proceed = true;                             // mettre proceed à "true"
+                            }
+                            else{                                           // si la valeur de la variable n'est pas la même que dans le tableau
+                                proceed = false;                            // mettre proceed à "false"
+                                ifCount++;                                  // incrémenter le comptage des conditions "if"
+                            }
+                        }
+                        else{                                               // si la condition n'est pas remplie
+                            ifCount++;                                      // incrémenter le comptage des conditions "if"
+                        }
+                    :}
+;
+D ::= SELFCLOSE:d   {:  if(proceed == true){                                // si la condition est remplie
+                            for(i=0; i<indent; i++){                        // afficher l'indentation
+                                System.out.print("\t");
+                            }
+                            System.out.print(d + "\n");                     // afficher la lettre de la balise
+                        }
+                    :}
+;
+C ::= CLOSE:c       {:  if(proceed == true){                                        // si la condition est remplie
+                            if(letter.peek().equals(c.toString().split("/|>")[1])){ // si la balise fermante correspond à la balise ouvrante
+                                indent--;                                           // décrémenter indent
+                                for(i=0; i<indent; i++){                            // afficher l'indentation
+                                    System.out.print("\t");
+                                }
+                                System.out.println(c);                              // afficher la balise
+                                letter.pop();
+                            }
+                            else{                                                   // si la balise fermante ne correspond pas à la balise ouvrante
+                                for(i=1; i<indent; i++){                            // afficher l'indentation
+                                    System.out.print("\t");
+                                }
+                                System.out.print("ERROR\n");                        // afficher une erreur
+                                System.exit(0);                                     // quitter le programme
+                            }
+                        }
+                    :}
+;
+O ::= OPEN:o        {:  if(proceed == true){                                // si la condition est remplie
+                            for(i=0; i<indent; i++){                        // afficher l'indentation
+                                System.out.print("\t");
+                            }
+                            indent++;                                       // incrémenter "indent"
+                            letter.push(o.toString().split("<| |>")[1]);    // récupérer la lettre
+                            System.out.println(o);                          // afficher la balise
+                        }
+                    :}
+;
+S ::= SET:s         {:  if(proceed == true){                                // si la condition est remplie
+                            map.put(s.toString().split(" |=")[1],           // mettre la variable et sa valeur dans le dictionnaire sous forme de chaîne de caractères
+                                    s.toString().split("\"")[1]);
+                        }
+                    :}
+;
+T ::= TEXT:t        {:  if(proceed == true){                                // si la condition est remplie
+                            for(i=0; i<indent; i++){                        // afficher l'indentation
+                                System.out.print("\t");
+                            }
+                            System.out.println(t);                          // afficher le texte
+                        }
+                    :}
+;
