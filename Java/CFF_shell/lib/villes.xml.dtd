@@ -1,0 +1,10 @@
+<!ELEMENT reseau (titre, ville, liaison)>
+<!ELEMENT titre (#PCDATA)>
+<!ELEMENT ville (nom, longitude, latitude)>
+<!ELEMENT nom (#PCDATA)>
+<!ELEMENT longitude (#PCDATA)>
+<!ELEMENT latitude (#PCDATA)>
+<!ELEMENT liaison (vil_1, vil_2, temps)>
+<!ELEMENT vil_1 (#PCDATA)>
+<!ELEMENT vil_2 (#PCDATA)>
+<!ELEMENT temps (#PCDATA)>
