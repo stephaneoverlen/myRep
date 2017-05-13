@@ -1,0 +1,5 @@
+Return locations and number of appearances of a symbole.
+
+usage: java Main <motif> <algo> (<fichier_texte>)
+
+Example : java Main 1212 1 text.txt
